@@ -181,13 +181,13 @@
     "id": 15,
     "phase": 1,
     "target": "Homme",
-    "text": "Utilise le masse-tête sur la Femme pendant 2 minutes.",
+    "text": "Utilise le masse-tête sur la Femme pendant 1 minute.",
     "tags": [
       "massage",
       "softcore"
     ],
     "hot": 1,
-    "duration": 120
+    "duration": 60
   },
   {
     "id": 16,
