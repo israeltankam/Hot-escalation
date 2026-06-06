@@ -20,8 +20,8 @@ def next_turn():
     st.session_state.gages_in_current_phase += 1
     
     # Logic pour changement de phase automatique
-    # Proportionnel à la durée : ex: 10 gages par phase pour 60 min
-    gages_per_phase = max(st.session_state.total_duration // 6, 5)
+    # On vise environ 5-6 gages par phase pour 1h, et 2-3 pour 15min
+    gages_per_phase = max(st.session_state.total_duration // 10, 2)
     
     if st.session_state.gages_in_current_phase >= gages_per_phase:
         if st.session_state.current_phase < 5:
@@ -91,10 +91,10 @@ if not st.session_state.game_started:
     with col3:
         duration_label = st.select_slider(
             "Durée du jeu",
-            options=["1h", "1h30", "2h", "3h"],
+            options=["15 min", "30 min", "45 min", "1h"],
             value="1h"
         )
-        durations = {"1h": 60, "1h30": 90, "2h": 120, "3h": 180}
+        durations = {"15 min": 15, "30 min": 30, "45 min": 45, "1h": 60}
         st.session_state.total_duration = durations[duration_label]
         
     with col4:
@@ -198,7 +198,7 @@ else:
         </div>
         """, unsafe_allow_html=True)
         if st.button("PASSER À LA PHASE SUIVANTE"):
-            st.session_state.current_phase += 1
+            st.session_state.current_phase = min(st.session_state.current_phase + 1, 5)
             st.session_state.gages_in_current_phase = 0
             st.session_state.current_gage = engine.get_next_gage(
                 st.session_state.current_phase,
