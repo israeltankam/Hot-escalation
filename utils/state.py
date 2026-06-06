@@ -26,6 +26,10 @@ def init_state():
         st.session_state.sex_finality = True
     if 'gages_in_current_phase' not in st.session_state:
         st.session_state.gages_in_current_phase = 0
+    if 'timer_active' not in st.session_state:
+        st.session_state.timer_active = False
+    if 'timer_seconds' not in st.session_state:
+        st.session_state.timer_seconds = 0
 
 def get_elapsed_time():
     if st.session_state.start_time:

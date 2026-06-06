@@ -146,14 +146,48 @@ else:
                 st.markdown(f'<div class="drink-suggestion">🍹 {engine.get_drink_suggestion()}</div>', unsafe_allow_html=True)
                 st.session_state.drink_counter = 0
 
+        # Timer Section
+        if st.session_state.current_gage.get('duration', 0) > 0:
+            st.markdown("---")
+            duration = st.session_state.current_gage['duration']
+            
+            col_t1, col_t2, col_t3 = st.columns([1, 2, 1])
+            with col_t2:
+                if not st.session_state.timer_active:
+                    if st.button(f"⏱️ DÉMARRER LE MINUTEUR ({duration}s)"):
+                        st.session_state.timer_active = True
+                        st.session_state.timer_seconds = duration
+                        st.rerun()
+                else:
+                    timer_placeholder = st.empty()
+                    progress_bar = st.progress(1.0)
+                    
+                    # Logique du compte à rebours
+                    for i in range(st.session_state.timer_seconds, -1, -1):
+                        if not st.session_state.timer_active: break # Au cas où on appuie sur STOP
+                        
+                        mins, secs = divmod(i, 60)
+                        timer_placeholder.markdown(f"<h2 style='font-size: 3rem;'>{mins:02d}:{secs:02d}</h2>", unsafe_allow_html=True)
+                        progress_bar.progress(i / duration)
+                        time.sleep(1)
+                    
+                    if st.session_state.timer_active:
+                        st.session_state.timer_active = False
+                        st.success("Temps écoulé !")
+                        st.balloons()
+                        time.sleep(2)
+                        st.rerun()
+
         # Buttons
         col_a, col_b = st.columns([3, 1])
         with col_a:
             if st.button("SUIVANT"):
+                st.session_state.timer_active = False # Reset timer on next
                 next_turn()
                 st.rerun()
         with col_b:
             if st.button("PASSER"):
+                st.session_state.timer_active = False # Reset timer on skip
                 skip_turn()
                 st.rerun()
                 

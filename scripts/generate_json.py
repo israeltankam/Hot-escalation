@@ -239,13 +239,31 @@ def parse_gages(text):
             
             tags = [t.strip().replace('#', '') for t in tags_str.split(' ') if t.strip()]
             
+            # Extraction de la durée
+            duration = 0
+            # Cas "90 secondes"
+            sec_match = re.search(r'pendant (\d+)\s*secondes?', description, re.IGNORECASE)
+            if sec_match:
+                duration = int(sec_match.group(1))
+            else:
+                # Cas "2 minutes"
+                min_match = re.search(r'pendant (\d+)\s*minutes?', description, re.IGNORECASE)
+                if min_match:
+                    duration = int(min_match.group(1)) * 60
+                else:
+                    # Cas "8 à 10 minutes"
+                    range_match = re.search(r'pendant (\d+)\s*à\s*(\d+)\s*minutes?', description, re.IGNORECASE)
+                    if range_match:
+                        duration = int(range_match.group(1)) * 60 # On prend la borne basse
+            
             gages.append({
                 "id": len(gages) + 1,
                 "phase": current_phase,
                 "target": target,
                 "text": description,
                 "tags": tags,
-                "hot": hot
+                "hot": hot,
+                "duration": duration
             })
             
     return gages
