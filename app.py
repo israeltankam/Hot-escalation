@@ -1,5 +1,6 @@
 import streamlit as st
 import time
+import random
 from utils.engine import GameEngine
 from utils.state import init_state, get_elapsed_time, get_remaining_time
 
