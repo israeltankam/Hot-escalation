@@ -30,6 +30,8 @@ def init_state():
         st.session_state.timer_active = False
     if 'timer_seconds' not in st.session_state:
         st.session_state.timer_seconds = 0
+    if 'game_over' not in st.session_state:
+        st.session_state.game_over = False
 
 def get_elapsed_time():
     if st.session_state.start_time:

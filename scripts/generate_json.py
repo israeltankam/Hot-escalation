@@ -15,7 +15,7 @@ PHASE 1 – Échauffement & Connexion (Hot 1-2)
 10.	Femme : Lèche le cou et les oreilles de l’Homme pendant 60 secondes. Tags: #baiser #teasing #softcore Hot: 1
 11.	Homme : Massage les pieds de la Femme pendant 2 minutes. Tags: #massage #softcore Hot: 1
 12.	Femme : Fais un lapdance habillée sur l’Homme pendant 90 secondes. Tags: #lapdance #grinding #softcore Hot: 2
-13.	Homme : Caresse le ventre et l'intérieur des cuisses de la Femme par-dessus ses vêtements pendant 75 secondes. Tags: #teasing #caresses #softcore Hot: 1
+13.	Homme : Caresse le ventre et l’intérieur des cuisses de la Femme par-dessus ses vêtements pendant 75 secondes. Tags: #teasing #caresses #softcore Hot: 1
 14.	Femme : Embrasse l’Homme avec un french kiss profond pendant 75 secondes. Tags: #baiser #softcore Hot: 1
 15.	Homme : Utilise le masse-tête sur le dos et les fesses de la Femme pendant 2 minutes. Tags: #massage #softcore Hot: 1
 16.	Femme : Bois un cocktail entier. Tags: #alcool Hot: 1
@@ -109,7 +109,7 @@ PHASE 3 – Excitation Orale & Jouets (Hot 3-4)
 20.	Femme : Fais une fellation tout en massant le périnée. Tags: #oral #teasing #softcore Hot: 4
 21.	Homme : Stimule le vagin et le clito avec tes doigts pendant 4 minutes. Tags: #doigts #masturbation #softcore Hot: 4
 22.	Femme : Suce l’Homme en chevauchant son visage. Tags: #69 #oral #softcore Hot: 4
-23.	Homme : Fais de l'edging à la Femme pendant 3 minutes. Tags: #edging #rétention #masturbation #softcore Hot: 4
+23.	Homme : Fais de l’edging à la Femme pendant 3 minutes. Tags: #edging #rétention #masturbation #softcore Hot: 4
 24.	Femme : Fais un titjob intense pendant 3 minutes. Tags: #titjob #softcore Hot: 4
 25.	Homme : Utilise le plug anal avec vibrations. Tags: #anal #jouet #softcore Hot: 4
 26.	Femme : Fais un deepthroat en regardant l’Homme dans les yeux. Tags: #oral #softcore Hot: 4
@@ -124,7 +124,7 @@ PHASE 3 – Excitation Orale & Jouets (Hot 3-4)
 35.	Homme : Combine doigts et plug anal. Tags: #doigts #anal #softcore Hot: 4
 36.	Femme : Lèche tout le corps de l’Homme très lentement. Tags: #oral #slow #softcore Hot: 4
 37.	Homme : Contrôle totalement le rabbit sur la Femme. Tags: #jouet #teasing #softcore Hot: 4
-38.	Femme : Fais un oral tout en faisant de l'edging à l’Homme. Tags: #oral #edging #softcore Hot: 4
+38.	Femme : Fais un oral tout en faisant de l’edging à l’Homme. Tags: #oral #edging #softcore Hot: 4
 39.	Homme : Fais une préparation anale avancée. Tags: #anal #prep #softcore Hot: 4
 40.	Femme : Fais une fellation tout en caressant tes seins. Tags: #oral #seins #softcore Hot: 4
 
@@ -148,7 +148,7 @@ PHASE 4 – Intensité & Préparation Anale (Hot 4-5)
 17.	Homme : Combine pénétration et stimulation anale. Tags: #pénétration #anal #softcore Hot: 5
 18.	Femme : Laisse l’Homme te prendre comme il veut pendant 7 minutes. Tags: #sexe #intense #hardcore #softcore Hot: 5
 19.	Homme : Porte le plug anal pendant que tu pénètres la Femme. Tags: #anal #sexe #softcore Hot: 5
-20.	Femme : Fais de l'edging à l’Homme pendant 4 minutes. Tags: #edging #rétention #softcore Hot: 5
+20.	Femme : Fais de l’edging à l’Homme pendant 4 minutes. Tags: #edging #rétention #softcore Hot: 5
 21.	Homme : Prends la Femme en position cuillères profondes. Tags: #pénétration #softcore Hot: 5
 22.	Femme : Contrôle ton propre orgasme (edging). Tags: #edging #rétention #masturbation #softcore Hot: 5
 23.	Homme : Prends la Femme en levrette avec le rabbit. Tags: #pénétration #jouet #softcore Hot: 5
@@ -187,7 +187,7 @@ PHASE 5 – Sexe Libre & Climax (Hot 5)
 14.	Femme : Chevauche l’Homme en amazone intense. Tags: #sexe #softcore Hot: 5
 15.	Homme : Combine pénétration et stimulation du clito avec le rabbit. Tags: #pénétration #jouet #softcore Hot: 5
 16.	Femme : Laisse l’Homme te prendre en cuillères tout en te caressant. Tags: #sexe #softcore Hot: 5
-17.	Homme : Fais de l'edging à la Femme avant de la pénétrer. Tags: #edging #pénétration #softcore Hot: 5
+17.	Homme : Fais de l’edging à la Femme avant de la pénétrer. Tags: #edging #pénétration #softcore Hot: 5
 18.	Femme : Masturbe-toi devant l’Homme puis laisse-le te prendre. Tags: #masturbation #teasing #softcore Hot: 5
 19.	Homme : Prends la Femme en levrette avec léger hairpulling. Tags: #pénétration #hairpulling #hardcore #softcore Hot: 5
 20.	Femme : Contrôle le rythme et fais jouir l’Homme comme tu veux. Tags: #sexe #softcore Hot: 5
@@ -222,13 +222,13 @@ def parse_gages(text):
         line = line.strip()
         if not line: continue
         
-        # Check for phase header
+        # Phase header
         phase_match = re.match(r'PHASE (\d+)', line)
         if phase_match:
             current_phase = int(phase_match.group(1))
             continue
             
-        # Check for gage line: 1.	Homme : ...
+        # Gage line
         gage_match = re.match(r'(\d+)\.\s+(Homme|Femme)\s*:\s*(.*?)Tags:\s*(.*?)\s+Hot:\s*(\d+)', line)
         if gage_match:
             id_in_phase = int(gage_match.group(1))
@@ -237,24 +237,27 @@ def parse_gages(text):
             tags_str = gage_match.group(4).strip()
             hot = int(gage_match.group(5))
             
-            tags = [t.strip().replace('#', '') for t in tags_str.split(' ') if t.strip()]
+            # Robust tag extraction
+            tags = []
+            # Split by space or comma, then clean
+            for part in re.split(r'[ ,]+', tags_str):
+                clean_tag = part.replace('#', '').strip()
+                if clean_tag:
+                    tags.append(clean_tag)
             
-            # Extraction de la durée
+            # Duration extraction
             duration = 0
-            # Cas "90 secondes"
             sec_match = re.search(r'pendant (\d+)\s*secondes?', description, re.IGNORECASE)
             if sec_match:
                 duration = int(sec_match.group(1))
             else:
-                # Cas "2 minutes"
                 min_match = re.search(r'pendant (\d+)\s*minutes?', description, re.IGNORECASE)
                 if min_match:
                     duration = int(min_match.group(1)) * 60
                 else:
-                    # Cas "8 à 10 minutes"
                     range_match = re.search(r'pendant (\d+)\s*à\s*(\d+)\s*minutes?', description, re.IGNORECASE)
                     if range_match:
-                        duration = int(range_match.group(1)) * 60 # On prend la borne basse
+                        duration = int(range_match.group(1)) * 60
             
             gages.append({
                 "id": len(gages) + 1,

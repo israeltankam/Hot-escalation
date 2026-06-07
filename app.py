@@ -20,17 +20,24 @@ def next_turn():
     st.session_state.gages_in_current_phase += 1
     
     # Logic pour changement de phase automatique
-    # On vise environ 5-6 gages par phase pour 1h, et 2-3 pour 15min
-    gages_per_phase = max(st.session_state.total_duration // 10, 2)
+    # On estime qu'un gage dure en moyenne 2 minutes (lecture + action)
+    total_estimated_gages = max(st.session_state.total_duration // 2, 10)
+    # Gages par phase pour les 4 premières phases (le reste moins les 2 de la phase 5)
+    gages_per_phase_1_to_4 = max((total_estimated_gages - 2) // 4, 2)
     
-    if st.session_state.gages_in_current_phase >= gages_per_phase:
-        if st.session_state.current_phase < 5:
+    if st.session_state.current_phase < 5:
+        if st.session_state.gages_in_current_phase >= gages_per_phase_1_to_4:
             if st.session_state.current_phase == 4 and not st.session_state.sex_finality:
-                pass # Stay in phase 4 if no sex finality
+                pass # Rester en phase 4 si pas de finalité sexe
             else:
                 st.session_state.current_phase += 1
                 st.session_state.gages_in_current_phase = 0
-    
+    else:
+        # Phase 5
+        if st.session_state.gages_in_current_phase >= 2:
+            st.session_state.game_over = True
+            return
+
     st.session_state.current_gage = engine.get_next_gage(
         st.session_state.current_phase,
         st.session_state.next_player,
@@ -46,12 +53,15 @@ def skip_turn():
         st.session_state.accepted_tags
     )
 
+def reset_game():
+    for key in list(st.session_state.keys()):
+        del st.session_state[key]
+    st.rerun()
+
 # --- SAFE WORD ---
 st.markdown('<div class="safe-word">', unsafe_allow_html=True)
 if st.button("STOP", key="stop_btn"):
-    st.session_state.game_started = False
-    st.session_state.current_gage = None
-    st.rerun()
+    reset_game()
 st.markdown('</div>', unsafe_allow_html=True)
 
 def format_gage_text(text):
@@ -84,7 +94,7 @@ if not st.session_state.game_started:
     st.session_state.accepted_tags = st.multiselect(
         "Cochez ce que vous acceptez ce soir :",
         options=all_tags,
-        default=['baiser', 'sensuel', 'slow', 'softcore', 'massage', 'caresses', 'teasing', 'seins', 'oral', 'fellation', 'alcool']
+        default=all_tags
     )
     
     col3, col4 = st.columns(2)
@@ -113,6 +123,19 @@ if not st.session_state.game_started:
                 st.session_state.accepted_tags
             )
             st.rerun()
+
+# --- GAME OVER SCREEN ---
+elif st.session_state.game_over:
+    st.title("❤️ Ascension Terminée")
+    st.markdown("""
+    <div class="gage-card">
+        <div class="gage-text">
+            L'ascension est terminée. Profitez de ce moment l'un avec l'autre...
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+    if st.button("RECOMMENCER"):
+        reset_game()
 
 # --- GAME SCREEN ---
 else:
@@ -173,21 +196,39 @@ else:
                     
                     if st.session_state.timer_active:
                         st.session_state.timer_active = False
+                        
+                        # Afficher le succès
                         st.success("Temps écoulé !")
                         st.balloons()
-                        time.sleep(2)
+                        
+                        # Jouer le son
+                        import os
+                        import base64
+                        sound_file = "assets/sounds/success.mp3"
+                        if os.path.exists(sound_file):
+                            with open(sound_file, "rb") as f:
+                                data = f.read()
+                                b64 = base64.b64encode(data).decode()
+                                audio_html = f"""
+                                    <audio autoplay="true" style="display:none;">
+                                        <source src="data:audio/mp3;base64,{b64}" type="audio/mp3">
+                                    </audio>
+                                """
+                                st.markdown(audio_html, unsafe_allow_html=True)
+                        
+                        time.sleep(3)
                         st.rerun()
 
         # Buttons
         col_a, col_b = st.columns([3, 1])
         with col_a:
             if st.button("SUIVANT"):
-                st.session_state.timer_active = False # Reset timer on next
+                st.session_state.timer_active = False
                 next_turn()
                 st.rerun()
         with col_b:
             if st.button("PASSER"):
-                st.session_state.timer_active = False # Reset timer on skip
+                st.session_state.timer_active = False
                 skip_turn()
                 st.rerun()
                 
