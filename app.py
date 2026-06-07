@@ -76,7 +76,7 @@ def format_gage_text(text):
     return text
 
 # --- SETUP SCREEN ---
-if not st.session_state.game_started:
+if not st.session_state.get('game_started', False):
     st.title("🔥 Hot Escalation")
     st.markdown("### Préparez votre soirée...")
     
@@ -125,7 +125,7 @@ if not st.session_state.game_started:
             st.rerun()
 
 # --- GAME OVER SCREEN ---
-elif st.session_state.game_over:
+elif st.session_state.get('game_over', False):
     st.title("❤️ Ascension Terminée")
     st.markdown("""
     <div class="gage-card">
