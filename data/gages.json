@@ -176,6 +176,17 @@
     "duration": 0
   },
   {
+    "id": -14,
+    "phase": 1,
+    "target": "Femme",
+    "text": "Bois une gorgée de gin ou de cocktail.",
+    "tags": [
+      "alcool"
+    ],
+    "hot": 1,
+    "duration": 0
+  },
+  {
     "id": 15,
     "phase": 1,
     "target": "Femme",
@@ -214,6 +225,17 @@
   },
   {
     "id": 18,
+    "phase": 1,
+    "target": "Homme",
+    "text": "Bois la moitié d’une bière.",
+    "tags": [
+      "alcool"
+    ],
+    "hot": 1,
+    "duration": 0
+  },
+  {
+    "id": -18,
     "phase": 1,
     "target": "Homme",
     "text": "Bois la moitié d’une bière.",
@@ -312,6 +334,19 @@
     "phase": 1,
     "target": "Homme",
     "text": "Bois un verre de bière lentement tout en regardant la Femme dans les yeux sans parler pendant toute la durée.",
+    "tags": [
+      "alcool",
+      "eye_contact",
+      "softcore"
+    ],
+    "hot": 2,
+    "duration": 0
+  },
+  {
+    "id": -25,
+    "phase": 1,
+    "target": "Femme",
+    "text": "Bois un verre de bière lentement tout en regardant l’Homme dans les yeux sans parler pendant toute la durée.",
     "tags": [
       "alcool",
       "eye_contact",
@@ -877,6 +912,17 @@
     "id": 69,
     "phase": 2,
     "target": "Homme",
+    "text": "Bois un shot de gin ou de cocktail.",
+    "tags": [
+      "alcool"
+    ],
+    "hot": 2,
+    "duration": 0
+  },
+  {
+    "id": -69,
+    "phase": 2,
+    "target": "Femme",
     "text": "Bois un shot de gin ou de cocktail.",
     "tags": [
       "alcool"
