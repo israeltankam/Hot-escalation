@@ -16,8 +16,12 @@ def init_state():
         st.session_state.start_time = None
     if 'drink_counter' not in st.session_state:
         st.session_state.drink_counter = 0
-    if 'total_duration' not in st.session_state:
-        st.session_state.total_duration = 60 # minutes
+    if 'total_gages_target' not in st.session_state:
+        st.session_state.total_gages_target = 30
+    if 'phase_distribution' not in st.session_state:
+        st.session_state.phase_distribution = {1: 10, 2: 8, 3: 6, 4: 4, 5: 2}
+    if 'total_done' not in st.session_state:
+        st.session_state.total_done = 0
     if 'names' not in st.session_state:
         st.session_state.names = {"Homme": "Iz", "Femme": "Fa"}
     if 'accepted_tags' not in st.session_state:
@@ -38,6 +42,7 @@ def get_elapsed_time():
         return int((time.time() - st.session_state.start_time) / 60)
     return 0
 
-def get_remaining_time():
-    elapsed = get_elapsed_time()
-    return max(st.session_state.total_duration - elapsed, 0)
+def get_progress():
+    if st.session_state.get('total_gages_target', 0) > 0:
+        return st.session_state.total_done / st.session_state.total_gages_target
+    return 0

@@ -4,7 +4,11 @@ import random
 class GameEngine:
     def __init__(self, gages_path='data/gages.json'):
         with open(gages_path, 'r', encoding='utf-8') as f:
-            self.all_gages = json.load(f)
+            content = f.read()
+            # Supprimer les commentaires // avant de parser le JSON
+            import re
+            content = re.sub(r'//.*', '', content)
+            self.all_gages = json.loads(content)
             
     def filter_gages(self, accepted_tags):
         """Filtre les gages selon les tags acceptés."""

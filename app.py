@@ -2,7 +2,7 @@ import streamlit as st
 import time
 import random
 from utils.engine import GameEngine
-from utils.state import init_state, get_elapsed_time, get_remaining_time
+from utils.state import init_state, get_elapsed_time, get_progress
 
 st.set_page_config(page_title="Hot Escalation", page_icon="🔥", layout="centered")
 
@@ -18,23 +18,20 @@ def next_turn():
     st.session_state.next_player = "Femme" if st.session_state.next_player == "Homme" else "Homme"
     st.session_state.drink_counter += 1
     st.session_state.gages_in_current_phase += 1
+    st.session_state.total_done += 1
     
-    # Logic pour changement de phase automatique
-    # On estime qu'un gage dure en moyenne 2 minutes (lecture + action)
-    total_estimated_gages = max(st.session_state.total_duration // 2, 10)
-    # Gages par phase pour les 4 premières phases (le reste moins les 2 de la phase 5)
-    gages_per_phase_1_to_4 = max((total_estimated_gages - 2) // 4, 2)
+    # Logic pour changement de phase automatique basé sur le ratio 5, 4, 3, 2, 1
+    target_for_current_phase = st.session_state.phase_distribution.get(st.session_state.current_phase, 1)
     
-    if st.session_state.current_phase < 5:
-        if st.session_state.gages_in_current_phase >= gages_per_phase_1_to_4:
+    if st.session_state.gages_in_current_phase >= target_for_current_phase:
+        if st.session_state.current_phase < 5:
             if st.session_state.current_phase == 4 and not st.session_state.sex_finality:
                 pass # Rester en phase 4 si pas de finalité sexe
             else:
                 st.session_state.current_phase += 1
                 st.session_state.gages_in_current_phase = 0
-    else:
-        # Phase 5
-        if st.session_state.gages_in_current_phase >= 2:
+        else:
+            # Fin de la Phase 5
             st.session_state.game_over = True
             return
 
@@ -57,6 +54,15 @@ def reset_game():
     for key in list(st.session_state.keys()):
         del st.session_state[key]
     st.rerun()
+
+def calculate_distribution(total):
+    # Ratio: 5, 4, 3, 2, 1 (total shares = 15)
+    p1 = round(total * 5 / 15)
+    p2 = round(total * 4 / 15)
+    p3 = round(total * 3 / 15)
+    p4 = round(total * 2 / 15)
+    p5 = total - (p1 + p2 + p3 + p4)
+    return {1: p1, 2: p2, 3: p3, 4: p4, 5: p5}
 
 # --- SAFE WORD ---
 st.markdown('<div class="safe-word">', unsafe_allow_html=True)
@@ -88,7 +94,7 @@ if not st.session_state.get('game_started', False):
         
     st.markdown("---")
     
-    all_tags = ['69', 'alcool', 'anal', 'baiser', 'bandeau', 'caresses', 'clito', 'cowgirl', 'cunnilingus', 'doigts', 'déshabillage', 'edging', 'fellation', 'grinding', 'hairpulling', 'hardcore', 'huile', 'intense', 'jouet', 'lapdance', 'levrette', 'lubrifiant', 'massage', 'masturbation', 'missionnaire', 'oral', 'plug', 'plume', 'prep', 'pénétration', 'rétention', 'seins', 'sensuel', 'sexe', 'slow', 'softcore', 'striptease', 'teasing', 'titjob', 'vibration']
+    all_tags = ['69', 'alcool', 'anal', 'anulingus', 'baiser', 'bandeau', 'body_shot', 'caresse', 'caresses', 'clito', 'compliment', 'cowgirl', 'cunnilingus', 'danse', 'denial', 'déshabillage', 'dirtytalk', 'doigts', 'edging', 'eye_contact', 'fantasy', 'fellation', 'fessée', 'grinding', 'hairpulling', 'hardcore', 'huile', 'ice', 'intense', 'jeu', 'jouet', 'lapdance', 'levrette', 'lubrifiant', 'massage', 'masturbation', 'menottes', 'missionnaire', 'oral', 'plug', 'plume', 'prep', 'pénétration', 'rétention', 'seins', 'sensuel', 'sexe', 'simulation', 'slow', 'softcore', 'striptease', 'teasing', 'temperature_play', 'titjob', 'vibration', 'visuel', 'whisper']
     
     st.markdown("#### Tags acceptés")
     st.session_state.accepted_tags = st.multiselect(
@@ -99,13 +105,13 @@ if not st.session_state.get('game_started', False):
     
     col3, col4 = st.columns(2)
     with col3:
-        duration_label = st.select_slider(
-            "Durée du jeu",
-            options=["15 min", "30 min", "45 min", "1h"],
-            value="1h"
+        num_gages = st.select_slider(
+            "Nombre de gages",
+            options=[15, 20, 25, 30, 35, 40, 45, 50, 55, 60],
+            value=30
         )
-        durations = {"15 min": 15, "30 min": 30, "45 min": 45, "1h": 60}
-        st.session_state.total_duration = durations[duration_label]
+        st.session_state.total_gages_target = num_gages
+        st.session_state.phase_distribution = calculate_distribution(num_gages)
         
     with col4:
         st.session_state.sex_finality = st.toggle("Finalité Sexe", value=True)
@@ -116,6 +122,9 @@ if not st.session_state.get('game_started', False):
         else:
             st.session_state.game_started = True
             st.session_state.start_time = time.time()
+            st.session_state.total_done = 0
+            st.session_state.gages_in_current_phase = 0
+            st.session_state.current_phase = 1
             st.session_state.current_gage = engine.get_next_gage(
                 st.session_state.current_phase,
                 st.session_state.next_player,
@@ -140,11 +149,12 @@ elif st.session_state.get('game_over', False):
 # --- GAME SCREEN ---
 else:
     # Header Info
-    elapsed = get_elapsed_time()
-    remaining = get_remaining_time()
+    done = st.session_state.total_done
+    total = st.session_state.total_gages_target
+    remaining = max(total - done, 0)
     
-    st.markdown(f'<div class="phase-info">Phase {st.session_state.current_phase} • {elapsed}m écoulés / {remaining}m restants</div>', unsafe_allow_html=True)
-    st.progress(elapsed / st.session_state.total_duration if st.session_state.total_duration > 0 else 0)
+    st.markdown(f'<div class="phase-info">Phase {st.session_state.current_phase} • {done} gages faits / {remaining} restants</div>', unsafe_allow_html=True)
+    st.progress(done / total if total > 0 else 0)
     
     if st.session_state.current_gage:
         target_name = st.session_state.names[st.session_state.current_gage['target']]
@@ -164,8 +174,8 @@ else:
         """, unsafe_allow_html=True)
         
         # Drink Suggestion
-        if st.session_state.drink_counter >= 3:
-            if random.random() > 0.5: # 50% de chance après 3 gages
+        if st.session_state.drink_counter >= 4:
+            if random.random() > 0.5:
                 st.markdown(f'<div class="drink-suggestion">🍹 {engine.get_drink_suggestion()}</div>', unsafe_allow_html=True)
                 st.session_state.drink_counter = 0
 
@@ -187,7 +197,7 @@ else:
                     
                     # Logique du compte à rebours
                     for i in range(st.session_state.timer_seconds, -1, -1):
-                        if not st.session_state.timer_active: break # Au cas où on appuie sur STOP
+                        if not st.session_state.timer_active: break
                         
                         mins, secs = divmod(i, 60)
                         timer_placeholder.markdown(f"<h2 style='font-size: 3rem;'>{mins:02d}:{secs:02d}</h2>", unsafe_allow_html=True)
@@ -196,12 +206,9 @@ else:
                     
                     if st.session_state.timer_active:
                         st.session_state.timer_active = False
-                        
-                        # Afficher le succès
                         st.success("Temps écoulé !")
                         st.balloons()
                         
-                        # Jouer le son
                         import os
                         import base64
                         sound_file = "assets/sounds/success.mp3"
